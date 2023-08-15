@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     public Text timerText;
+    public Text scoreText;
+
     private int countdownMinutes = 3;
     private float countdownSeconds;
 
@@ -29,5 +31,10 @@ public class GameManager : MonoBehaviour
             // 0•b‚É‚È‚Á‚½‚Æ‚«‚Ìˆ—
         }
 
+    }
+
+    public void RefreshScoreText(float score)
+    {
+        scoreText.GetComponent<Text>().text = "ƒXƒRƒA " + score.ToString();
     }
 }
