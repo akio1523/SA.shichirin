@@ -22,6 +22,8 @@ public class TongsManager : MonoBehaviour, IDragHandler
     private bool hasMeat; // 
     private bool isGrilling; // フラグ用の変数
 
+    public float score;
+
 
 
 
@@ -57,6 +59,7 @@ public class TongsManager : MonoBehaviour, IDragHandler
     {
         if (collision.gameObject.tag == "Meat" && !hasMeat)
         {
+            score = Meat.GetComponent<MeatManager>().score; // ここでスコアを取得
             StartCoroutine(TransferGrilledMeat());
 
         }
@@ -91,7 +94,9 @@ public class TongsManager : MonoBehaviour, IDragHandler
     private IEnumerator TransferGrilledMeat()
     {
         yield return new WaitForSeconds(0.5f);
-        GameManager.GetComponent<GameManager>().RefreshScoreText(2.5f);
+
+        
+            Meat.GetComponent<MeatManager>().TouchMeat();
         Destroy(Meat);
        
     }

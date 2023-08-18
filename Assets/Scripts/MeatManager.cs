@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
+
 
 public class MeatManager : MonoBehaviour
 {
@@ -14,42 +14,67 @@ public class MeatManager : MonoBehaviour
     // 肉の色ごとのスコアを表すfloat型の配列
     public float[] meatScore = new float[4];
 
-    // 肉の色のインデックスを表すint型の変数
-    private int colorIndex;
-
-    // 肉の色が変わる間隔を表すfloat型の変数
-    public float colorChangeTime;
-
-    private float score;
+    public float score;
 
     private float grillMeatSeconds;
+    private int colorIndex;
+
+    private GameObject Shichirin;
     // Start is called before the first frame update
     void Start()
     {
-        // FindObjectOfTypeメソッドでGameManagerオブジェクトのコンポーネントへの参照を取得する
-        //GameManager = FindObjectOfType<GameManager>();
-
-        // colorIndexを0に初期化する
-        colorIndex = -1;
+      
 
         grillMeatSeconds = 0;
-
-        
+        colorIndex=-1;
+        Shichirin = GameObject.Find("ImageShichirin");
+        GameManager = GameObject.Find("GameManager");
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        grillMeatSeconds += Time.deltaTime;
-
-        if(grillMeatSeconds<5f) { }
+        if (grillMeatSeconds < 5f && colorIndex != 0)
+        {
+            colorIndex = 0;
+            ChangeColor(colorIndex);
+        }
+        else if (grillMeatSeconds < 7f && colorIndex != 1)
+        {
+            colorIndex = 1;
+            ChangeColor(colorIndex);
+        }
+        else if (grillMeatSeconds < 8.5f && colorIndex != 2)
+        {
+            colorIndex = 2;
+            ChangeColor(colorIndex);
+        }
+        else if (grillMeatSeconds < 10f && colorIndex != 3)
+        {
+            colorIndex = 3;
+            ChangeColor(colorIndex);
+        }
+        else if (grillMeatSeconds >= 10f)
+        {
+            Destroy(gameObject);
+        }
     }
 
-    private void ChangeColor()
+    private void ChangeColor(int colorIndex)
     {
-        colorIndex++;
-        gameObject.GetComponent<Image>().sprite = meatPicture[colorIndex];
-        //gameObject.GetComponent<Image>().sprite = scorePicture[colorIndex]; こっちは別のメソッドで生成？壁打ちを参照
+       
+        
+            gameObject.GetComponent<Image>().sprite = meatPicture[colorIndex];
+            //gameObject.GetComponent<Image>().sprite = scorePicture[colorIndex]; こっちは別のメソッドで生成？壁打ちを参照
+            score = meatScore[colorIndex];
+            //scorePicture[colorIndex];
+            //Debug.Log("カラーインデックスは" + colorIndex);
+        
+    }
 
+
+    public void TouchMeat()
+    {
+        GameManager.GetComponent<GameManager>().RefreshScoreText(score);
     }
 }

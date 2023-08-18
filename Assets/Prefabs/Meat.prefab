@@ -144,3 +144,14 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 09e807823a42f6544a1ea9b8e6afcf37, type: 3}
   - {fileID: 21300000, guid: 3aeb85c5f2b485a4f9a50d47800a0eac, type: 3}
   - {fileID: 21300000, guid: be80dc700a1231c40a60eda7a2d5e561, type: 3}
+  scorePicture:
+  - {fileID: 21300000, guid: 54e7c36e7653bbf49ad5d2fb1b34b827, type: 3}
+  - {fileID: 21300000, guid: cbdff005cedfe67489afc5943e12420d, type: 3}
+  - {fileID: 21300000, guid: 168fa1be765122f48bf2857ff4f29c9f, type: 3}
+  - {fileID: 21300000, guid: 683086cf2271af847ad51f7bc776201c, type: 3}
+  meatScore:
+  - -0.5
+  - 5
+  - 1
+  - -5
+  colorChangeTime: 0

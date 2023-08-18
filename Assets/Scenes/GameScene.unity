@@ -437,6 +437,7 @@ MonoBehaviour:
   Shichirin: {fileID: 672943611}
   meatPrefab: {fileID: 4647256889173537631, guid: 854f7860876be9249a8d1c4c0dc22fff, type: 3}
   GameManager: {fileID: 265201387}
+  score: 0
 --- !u!50 &340572609
 Rigidbody2D:
   serializedVersion: 4
@@ -813,7 +814,7 @@ MonoBehaviour:
     m_Right: 80
     m_Top: 80
     m_Bottom: 80
-  m_ChildAlignment: 0
+  m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 100, y: 100}
