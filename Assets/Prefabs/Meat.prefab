@@ -125,7 +125,7 @@ BoxCollider2D:
   m_AutoTiling: 0
   serializedVersion: 2
   m_Size: {x: 30, y: 20}
-  m_EdgeRadius: 0.71
+  m_EdgeRadius: 0.21
 --- !u!114 &1008908095719893348
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -140,7 +140,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GameManager: {fileID: 0}
   meatPicture:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 21300000, guid: 99c43b2769c8cba4c8b3e9635783b693, type: 3}
+  - {fileID: 21300000, guid: 09e807823a42f6544a1ea9b8e6afcf37, type: 3}
+  - {fileID: 21300000, guid: 3aeb85c5f2b485a4f9a50d47800a0eac, type: 3}
+  - {fileID: 21300000, guid: be80dc700a1231c40a60eda7a2d5e561, type: 3}

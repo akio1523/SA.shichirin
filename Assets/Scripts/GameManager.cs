@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
     private int countdownMinutes = 3;
     private float countdownSeconds;
 
+    private float sum = 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -35,6 +37,7 @@ public class GameManager : MonoBehaviour
 
     public void RefreshScoreText(float score)
     {
-        scoreText.GetComponent<Text>().text = "スコア " + score.ToString();
+        sum += score;
+        scoreText.GetComponent<Text>().text = "スコア " + sum.ToString();
     }
 }

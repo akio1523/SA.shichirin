@@ -6,16 +6,22 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
-public class TongsManager : MonoBehaviour, IDragHandler,IPointerUpHandler
+public class TongsManager : MonoBehaviour, IDragHandler
 
 {
     public GameObject ImageMeat;
     public Sprite rawMeatPicture;
 
     public GameObject Shichirin;
-    public GameObject Meat;
-    private bool hasMeat; // ƒgƒ“ƒO‚ª“÷‚ÌƒCƒ[ƒW‚ğ‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©‚Ì•Ï”
+    private GameObject Meat;
+    public GameObject meatPrefab;
+    public GameObject GameManager;
+   
+    private bool hasMeat; // 
+    private bool isGrilling; // ãƒ•ãƒ©ã‚°ç”¨ã®å¤‰æ•°
+
 
 
 
@@ -24,7 +30,7 @@ public class TongsManager : MonoBehaviour, IDragHandler,IPointerUpHandler
         ImageMeat.SetActive(false);
         hasMeat = false;
     }
-    public void OnDrag(PointerEventData eventData) 
+    public void OnDrag(PointerEventData eventData)
     {
         Vector3 tongsPos = Camera.main.ScreenToWorldPoint(eventData.position);
         tongsPos.z = 0;
@@ -33,55 +39,68 @@ public class TongsManager : MonoBehaviour, IDragHandler,IPointerUpHandler
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if(collision.gameObject.tag=="Plate"&&!hasMeat)
+        if (collision.gameObject.tag == "Plate" && !hasMeat)
         {
-            ImageMeat.SetActive(true);
-            hasMeat = true;
-        }
-        
-        if (collision.gameObject.tag == "Shichirin" && hasMeat)
-        {
-            Shichirin.GetComponent<ShichirinManager>().AddMeat();
-            ImageMeat.SetActive(false);
-            hasMeat = false;
+            StartCoroutine(PickUpMeat()); 
         }
 
-        
+        if (collision.gameObject.tag == "Shichirin" && hasMeat&& !isGrilling)ã€€//ã‚³ãƒ«ãƒ¼ãƒãƒ³ã§å¤§é‡ã«ç”Ÿæˆã•ã‚Œã‚‹ã®ã§ã‚°ãƒªãƒ«ãƒŸãƒ¼ãƒˆãƒ¡ã‚½ãƒƒãƒ‰ç”¨ã®ãƒ–ãƒ¼ãƒ«å¤‰æ•°ã‚’ç”¨æ„
+        {
+            StartCoroutine(GrillMeat()); 
+        }
+
+
 
 
     }
-
-    /*private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Meat" && !hasMeat)
         {
-            Shichirin.GetComponent<ShichirinManager>().TouchMeat();
-            
-        }
-
-    }*/
-
-    public void OnDrop(PointerEventData eventData)
-    {
-    }
-
-    public void OnPointerUp(PointerEventData eventData)
-    {
-
-        // ƒhƒ‰ƒbƒOI—¹‚Ìƒ}ƒEƒXƒ|ƒCƒ“ƒ^[‚ÌˆÊ’u‚ğæ“¾‚·‚é
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(eventData.position);
-        mousePos.z = 0;
-
-        // ‚»‚ÌˆÊ’u‚É‚ ‚éƒIƒuƒWƒFƒNƒg‚ğŒŸo‚·‚é
-        RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
-
-        // ƒIƒuƒWƒFƒNƒg‚ª‘¶İ‚µAµ—Ö‚Å‚ ‚ê‚Î
-        if (hit.collider != null && hit.collider.gameObject.tag == "Shichirin")
-        {
-            // AddMeatƒƒ\ƒbƒh‚ğŒÄ‚Ño‚·
-            Shichirin.GetComponent<ShichirinManager>().AddMeat();
-            ImageMeat.SetActive(false);
+            StartCoroutine(TransferGrilledMeat());
 
         }
+
     }
+
+    // ä¸€å®šæ™‚é–“å¾Œã«ImageMeatã‚’è¡¨ç¤ºã™ã‚‹ã‚³ãƒ«ãƒ¼ãƒãƒ³
+    private IEnumerator PickUpMeat()
+    {
+        yield return new WaitForSeconds(0.5f); 
+        ImageMeat.SetActive(true); 
+        hasMeat = true; 
+        yield break;
+    }
+
+    private IEnumerator GrillMeat()
+    {   
+
+        isGrilling = true; // ãƒ•ãƒ©ã‚°trueã«ã™ã‚‹
+        yield return new WaitForSeconds(0.5f);
+
+        Meat = Instantiate(meatPrefab, Shichirin.transform);
+        //meat.transform.SetParent(gameObject.transform, false);
+        Meat.transform.position = Shichirin.transform.position + new Vector3(Random.Range(-2f, 2f), Random.Range(-2f, 2f), 0);
+        
+        ImageMeat.SetActive(false);
+        hasMeat = false;
+       
+        isGrilling = false; // ãƒ•ãƒ©ã‚°ã‚’falseã«ã™ã‚‹
+    }
+
+    private IEnumerator TransferGrilledMeat()
+    {
+        yield return new WaitForSeconds(0.5f);
+        GameManager.GetComponent<GameManager>().RefreshScoreText(2.5f);
+        Destroy(Meat);
+       
+    }
+
 }
+
+    
+
+    
+
+   
+    

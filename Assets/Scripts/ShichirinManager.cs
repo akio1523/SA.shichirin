@@ -25,12 +25,7 @@ public class ShichirinManager : MonoBehaviour
     }
 
 
-    public void AddMeat()
-    {
-      meat = Instantiate(meatPrefab, transform);
-            //meat.transform.SetParent(gameObject.transform, false);
-            meat.transform.position = transform.position + new Vector3(Random.Range(-2f, 2f), Random.Range(-2f, 2f), 0);
-      }
+    
 
     public void TouchMeat()
     {
