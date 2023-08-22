@@ -1,4 +1,4 @@
-using Microsoft.Unity.VisualStudio.Editor;
+
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -18,7 +18,9 @@ public class TongsManager : MonoBehaviour, IDragHandler
     private GameObject Meat;
     public GameObject meatPrefab;
     public GameObject GameManager;
-   
+    public GameObject scoreTextPrefab;
+
+
     private bool hasMeat; // 
     private bool isGrilling; // フラグ用の変数
 
@@ -55,16 +57,7 @@ public class TongsManager : MonoBehaviour, IDragHandler
 
 
     }
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.tag == "Meat" && !hasMeat)
-        {
-            score = Meat.GetComponent<MeatManager>().score; // ここでスコアを取得
-            StartCoroutine(TransferGrilledMeat());
-
-        }
-
-    }
+   
 
     // 一定時間後にImageMeatを表示するコルーチン
     private IEnumerator PickUpMeat()
@@ -81,26 +74,45 @@ public class TongsManager : MonoBehaviour, IDragHandler
         isGrilling = true; // フラグtrueにする
         yield return new WaitForSeconds(0.5f);
 
-        Meat = Instantiate(meatPrefab, Shichirin.transform);
-        //meat.transform.SetParent(gameObject.transform, false);
-        Meat.transform.position = Shichirin.transform.position + new Vector3(Random.Range(-2f, 2f), Random.Range(-2f, 2f), 0);
         
+        Meat = Instantiate(meatPrefab, Shichirin.transform);
+        
+        //meat.transform.SetParent(gameObject.transform, false);
+        //Meat.transform.position = Shichirin.transform.position + new Vector3(Random.Range(-2f, 2f), Random.Range(-2f, 2f), 0);
+
         ImageMeat.SetActive(false);
         hasMeat = false;
        
         isGrilling = false; // フラグをfalseにする
     }
 
-    private IEnumerator TransferGrilledMeat()
+    public void GetScoreTextObject(int colorIndex, float score)
     {
-        yield return new WaitForSeconds(0.5f);
+        GameManager.GetComponent<GameManager>().RefreshScoreText(score);
 
-        
-            Meat.GetComponent<MeatManager>().TouchMeat();
-        Destroy(Meat);
-       
+        // コルーチンを呼び出す
+        StartCoroutine(CreateScoreText(colorIndex, score));
     }
 
+    // スコアテキストを生成するコルーチン(スコア反映とスコアテキストのずれ修正)
+    private IEnumerator CreateScoreText(int colorIndex, float score)
+    {
+        GameObject scoreText = Instantiate(scoreTextPrefab);
+        scoreText.transform.SetParent(gameObject.transform, false);
+        scoreText.transform.position = transform.position;
+        Debug.Log("スコアテキスト生成");
+        if (colorIndex == 1) scoreText.GetComponent<Text>().text = "+" + score + "P".ToString();
+        else scoreText.GetComponent<Text>().text = score + "P".ToString();
+        Debug.Log("スコアテキストの点数は" + score);
+        Rigidbody2D scoreTextRb = scoreText.GetComponent<Rigidbody2D>(); // scoreTextのRigidbody2Dを取得
+        scoreTextRb.AddForce(Vector2.up * 2f, ForceMode2D.Impulse); // 上方向に5fの力を加える
+
+        // 0.5秒待つ
+        yield return new WaitForSeconds(0.5f);
+
+        // スコアテキストを破棄する
+        Destroy(scoreText);
+    }
 }
 
     
