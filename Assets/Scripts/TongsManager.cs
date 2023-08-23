@@ -11,20 +11,19 @@ using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 public class TongsManager : MonoBehaviour, IDragHandler
 
 {
-    public GameObject ImageMeat;
-    public Sprite rawMeatPicture;
+    public GameObject ImageMeat; // つかんだ肉の画像
+    public Sprite rawMeatPicture; // 生肉の画像
 
-    public GameObject Shichirin;
-    private GameObject Meat;
-    public GameObject meatPrefab;
-    public GameObject GameManager;
-    public GameObject scoreTextPrefab;
+    public GameObject Shichirin; // 七輪のオブジェクト
+    private GameObject Meat; // 置いた肉のオブジェクト
+    public GameObject meatPrefab; // 置く肉のプレハブ
+    public GameObject GameManager; 
+    public GameObject scoreTextPrefab; // スコアテキストのプレハブ
 
+    private bool hasMeat; // 肉をつかんでいるかどうかのフラグ
+    private bool isGrilling; // 肉をグリルに置いているかどうかのフラグ
 
-    private bool hasMeat; // 
-    private bool isGrilling; // フラグ用の変数
-
-    public float score;
+    private float score; // スコア
 
 
 
@@ -48,14 +47,10 @@ public class TongsManager : MonoBehaviour, IDragHandler
             StartCoroutine(PickUpMeat()); 
         }
 
-        if (collision.gameObject.tag == "Shichirin" && hasMeat&& !isGrilling)　//コルーチンで大量に生成されるのでグリルミートメソッド用のブール変数を用意
+        if (collision.gameObject.tag == "Shichirin" && hasMeat&& !isGrilling)　//コルーチンで大量に生成されるため、グリルミートメソッド用のブール変数を用意
         {
             StartCoroutine(GrillMeat()); 
         }
-
-
-
-
     }
    
 
@@ -68,6 +63,7 @@ public class TongsManager : MonoBehaviour, IDragHandler
         yield break;
     }
 
+    // 一定時間後にImageMeatを非表示し、肉を七輪に生成するコルーチン
     private IEnumerator GrillMeat()
     {   
 
@@ -76,9 +72,6 @@ public class TongsManager : MonoBehaviour, IDragHandler
 
         
         Meat = Instantiate(meatPrefab, Shichirin.transform);
-        
-        //meat.transform.SetParent(gameObject.transform, false);
-        //Meat.transform.position = Shichirin.transform.position + new Vector3(Random.Range(-2f, 2f), Random.Range(-2f, 2f), 0);
 
         ImageMeat.SetActive(false);
         hasMeat = false;
@@ -86,31 +79,33 @@ public class TongsManager : MonoBehaviour, IDragHandler
         isGrilling = false; // フラグをfalseにする
     }
 
+
+    //ミートマネージャーから呼び出されるメソッド
     public void GetScoreTextObject(int colorIndex, float score)
-    {
+    {   
+        //スコア表示
         GameManager.GetComponent<GameManager>().RefreshScoreText(score);
 
-        // コルーチンを呼び出す
+        // スコアテキスト生成のコルーチンを呼び出す
         StartCoroutine(CreateScoreText(colorIndex, score));
     }
 
-    // スコアテキストを生成するコルーチン(スコア反映とスコアテキストのずれ修正)
+    // スコアテキストの生成～破壊までのコルーチン
     private IEnumerator CreateScoreText(int colorIndex, float score)
     {
         GameObject scoreText = Instantiate(scoreTextPrefab);
         scoreText.transform.SetParent(gameObject.transform, false);
         scoreText.transform.position = transform.position;
-        Debug.Log("スコアテキスト生成");
-        if (colorIndex == 1) scoreText.GetComponent<Text>().text = "+" + score + "P".ToString();
-        else scoreText.GetComponent<Text>().text = score + "P".ToString();
-        Debug.Log("スコアテキストの点数は" + score);
+
+            
+        scoreText.GetComponent<Text>().text = score + "P".ToString();
+        
+       //スコアテキストのアニメーション
         Rigidbody2D scoreTextRb = scoreText.GetComponent<Rigidbody2D>(); // scoreTextのRigidbody2Dを取得
         scoreTextRb.AddForce(Vector2.up * 2f, ForceMode2D.Impulse); // 上方向に5fの力を加える
 
-        // 0.5秒待つ
         yield return new WaitForSeconds(0.5f);
 
-        // スコアテキストを破棄する
         Destroy(scoreText);
     }
 }

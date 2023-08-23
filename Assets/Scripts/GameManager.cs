@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
 {
     public Text timerText;
     public Text scoreText;
-    public GameObject TextGameOver;
+    public GameObject TextGameOver;//「おわり！」の文字
 
     private int countdownMinutes = 1;
     private float countdownSeconds;
@@ -22,14 +22,14 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Time.timeScale = 1;
+        Time.timeScale = 1;//ゲームオーバーで時間が止まるので初期化させる
         countdownSeconds = countdownMinutes * 60;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {   
-        //以下パクリ
+        //時間の表示（ネットからパクリ）
         countdownSeconds -= Time.deltaTime;
         var span = new TimeSpan(0, 0, (int)countdownSeconds);
         timerText.text = "タイム "+span.ToString(@"mm\:ss");
@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour
 
     }
 
+    //トングマネージャーから呼び出されるメソッド
     public void RefreshScoreText(float score)
     {
         currentScore += score;
@@ -48,42 +49,46 @@ public class GameManager : MonoBehaviour
 
     private void GameOver()
     {
-        
-        Time.timeScale = 0; 
+        //時間を止める
+        Time.timeScale = 0;
 
+        //今回のスコア
         PlayerPrefs.SetFloat("CURRENTSCORE", currentScore);
+
+        //「おわり！」の文字表示
         TextGameOver.SetActive(true);
 
-        Debug.Log("今回のスコア" + currentScore);
+        //最高点の更新       
         if (PlayerPrefs.GetFloat("BESTSCORE", 0) < currentScore)
         {
             PlayerPrefs.SetFloat("BESTSCORE", currentScore);
             PlayerPrefs.Save();
 
-            Debug.Log("bestスコア" + PlayerPrefs.GetFloat("BESTSCORE", 0));//飛ばしてるっぽい？
+                Debug.Log("bestスコア" + PlayerPrefs.GetFloat("BESTSCORE", 0));
             
         }
 
+        //最低点の更新（MaxValueが何かよくわかってない）
         if (PlayerPrefs.GetFloat("WORSTSCORE", float.MaxValue) > currentScore)
         {
             PlayerPrefs.SetFloat("WORSTSCORE", currentScore);
             PlayerPrefs.Save();
-            Debug.Log("worstスコア" + PlayerPrefs.GetFloat("WORSTSCORE", float.MaxValue));
+
+                Debug.Log("worstスコア" + PlayerPrefs.GetFloat("WORSTSCORE", float.MaxValue));
         }
 
         PlayerPrefs.Save();
 
+        // コルーチンでゲームオーバー画面に遷移
+        StartCoroutine(GoToGameOverScene()); 
         
-        StartCoroutine(GoToGameOverScene()); // 追加：コルーチンを使う
-        Debug.Log("コルーチン開始");
 
     }
 
-    private IEnumerator GoToGameOverScene()  //まるまる変更
+    private IEnumerator GoToGameOverScene()  
     {
-        yield return new WaitForSecondsRealtime(3); // Time.timeScaleの影響を受けない待機
+        yield return new WaitForSecondsRealtime(3); 
         SceneManager.LoadScene("GameOverScene");
-        Debug.Log("ゲームオーバー画面へ移動");
-
+        
     }
 }

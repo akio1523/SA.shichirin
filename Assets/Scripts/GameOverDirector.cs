@@ -20,18 +20,9 @@ public class GameOverDirector : MonoBehaviour
         TextBestScore.GetComponent<Text>().text = PlayerPrefs.GetFloat("BESTSCORE", 0) + "P".ToString();
         TextWorstScore.GetComponent<Text>().text = PlayerPrefs.GetFloat("WORSTSCORE", 0) + "P".ToString();
 
-
-
-
-
-
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
+   
 
     public void GoGameScene()
     {

@@ -11,20 +11,17 @@ public class MeatManager : MonoBehaviour
     private GameObject GameManager;
     private GameObject Shichirin;
     private GameObject Tongs;
-    public Sprite[] meatPicture = new Sprite[4];
-    public Sprite[] scorePicture = new Sprite[4];
 
-    // 肉の色ごとのスコアを表すfloat型の配列
-    public float[] meatScore = new float[4];
+    public Sprite[] meatPicture = new Sprite[4];//肉の色の画像
+    public Sprite[] scorePicture = new Sprite[4];//←使ってないです
+    public float[] meatScore = new float[4]; // 肉の焼き加減に伴うスコア
 
     private float score;
-    private float grillMeatSeconds;
-    private int colorIndex;
+    private float grillMeatSeconds;//肉の焼き時間
+    private int colorIndex;//肉の焼き加減に伴う番号
 
-    
-    
+    private bool CantTransfer;//肉が焦げた時のフラグ
 
-    private bool CantTransfer;
     // Start is called before the first frame update
     void Start()
     {
@@ -42,8 +39,13 @@ public class MeatManager : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {   
-        if(transform.IsChildOf(Shichirin.transform))grillMeatSeconds+= Time.deltaTime;
+        //肉が七輪の直下に配置されたら焼く時間の計測開始
+        if (transform.IsChildOf(Shichirin.transform)) 
+        { 
+            grillMeatSeconds += Time.deltaTime;
+        }
 
+        //肉の焼き加減
         if (grillMeatSeconds < 5f )
         {
             colorIndex = 0;
@@ -59,45 +61,36 @@ public class MeatManager : MonoBehaviour
             colorIndex = 2;
             ChangeColor(colorIndex);
         }
-        else 
+        else //こげて取れない状態
         {
             colorIndex = 3;
             ChangeColor(colorIndex);
             Destroy(gameObject, 1.5f);
 
-            if (!CantTransfer)
+            if (!CantTransfer)//一回だけ↓の内容を呼び出すための条件式
             {
-                Tongs.GetComponent<TongsManager>().GetScoreTextObject(colorIndex,score);
+                Tongs.GetComponent<TongsManager>().GetScoreTextObject(colorIndex, score);
                 CantTransfer = true;
             }
-
-
-           
+ 
         }
         
     }
 
+    //FixedUpdateに合わせて肉の色とスコアの変更を呼び出す
     private void ChangeColor(int colorIndex)
     {
         gameObject.GetComponent<Image>().sprite = meatPicture[colorIndex];
         score = meatScore[colorIndex];
-        
-            
-        
-        
-
     }
 
+    //トングについた肉の画像を表示していない状態＆肉が焦げてないときにトングが肉に触ると
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Tongs"&& collision.gameObject.tag != "Meat"&&colorIndex!=3)
         {
-             // ここでスコアを取得
+             //焼いた肉を取るコルーチン開始
             StartCoroutine(TransferGrilledMeat());
-            Debug.Log("transferコルーチン開始");
-            Debug.Log("カラーインデックスは" + colorIndex);
-            Debug.Log("スコアは" + score);
-
 
         }
 
@@ -106,8 +99,7 @@ public class MeatManager : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
         Destroy(gameObject);
-        Tongs.GetComponent<TongsManager>().GetScoreTextObject(colorIndex, score);
-
+        Tongs.GetComponent<TongsManager>().GetScoreTextObject(colorIndex, score);// ここでトングマネージャーからスコアを取得
 
     }
 
