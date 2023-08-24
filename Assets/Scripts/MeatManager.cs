@@ -89,7 +89,7 @@ public class MeatManager : MonoBehaviour
     {
         if (collision.gameObject.tag == "Tongs"&& collision.gameObject.tag != "Meat"&&colorIndex!=3)
         {
-             //焼いた肉を取るコルーチン開始
+             //焼いた肉を取るコルーチン開始↓
             StartCoroutine(TransferGrilledMeat());
 
         }
@@ -102,9 +102,6 @@ public class MeatManager : MonoBehaviour
         Tongs.GetComponent<TongsManager>().GetScoreTextObject(colorIndex, score);// ここでトングマネージャーからスコアを取得
 
     }
-
-    
-
 
    
 }

@@ -7,7 +7,6 @@ using UnityEngine.UI;
 public class TitleDirector : MonoBehaviour
 {
     
-
     public void GoGameScene()
     {
         SceneManager.LoadScene("GameScene");

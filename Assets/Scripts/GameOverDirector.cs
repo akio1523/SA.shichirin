@@ -22,8 +22,6 @@ public class GameOverDirector : MonoBehaviour
 
     }
 
-   
-
     public void GoGameScene()
     {
         SceneManager.LoadScene("GameScene");
